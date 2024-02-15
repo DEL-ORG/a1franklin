@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  PG_USER: doadmin
+  PG_HOST: db-postgresql-nyc3-26515-do-user-12198957-0.c.db.ondigitalocean.com
+  PG_PORT: "25060"
+  PG_NAME: s6-user
+  AWS_DEFAULT_REGION: "us-east-1"
+  BUCKET_NAME: "del-db-backup/S6/a1franklin/"
+  sslmode: require
+
