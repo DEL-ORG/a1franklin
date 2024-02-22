@@ -4,6 +4,6 @@ resource "aws_vpc" "gymef_vpc" {
   enable_dns_hostnames = var.enable_dns_hostnames
 
   tags = merge(var.common_tags, {
-    Name =" gymef_vpc"
+    Name = " gymef_vpc"
   })
 }

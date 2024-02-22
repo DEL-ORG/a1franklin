@@ -2,7 +2,7 @@
 resource "aws_subnet" "gymef_private_subnet" {
   count             = length(var.aws_availability_zones)
   vpc_id            = aws_vpc.gymef_vpc.id
-  cidr_block        = cidrsubnet(var.vpc_cidr_block,6, count.index + 1)
+  cidr_block        = cidrsubnet(var.vpc_cidr_block, 6, count.index + 1)
   availability_zone = element(var.aws_availability_zones, count.index)
 
   tags = merge(var.common_tags, {
