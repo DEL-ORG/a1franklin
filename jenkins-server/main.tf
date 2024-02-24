@@ -24,10 +24,23 @@ resource "aws_instance" "jenkins_master" {
     ]
 
     connection {
-      type     = "ssh"
-      user     = "ubuntu" # or whatever user is appropriate for your AMI
-    #   private_key = file(var.private_key_path) # path to your private key file
-      host     = self.public_ip # use "self" to refer to the instance itself
+      type        = "ssh"
+      user        = "ubuntu" # or whatever user is appropriate for your AMI
+      private_key = file(var.private_key_path) # path to your private key file
+      host        = self.public_ip # use "self" to refer to the instance itself
     }
+  }
+}
+
+# Launch an EC2 instance for Jenkins dynamic node
+resource "aws_instance" "jenkins_node" {
+  ami             = var.ami
+  instance_type   = var.instance_type_node
+  key_name        = var.key_name
+  security_groups = [aws_security_group.gymef_jenkins_sg.name]
+  user_data       = var.jenkins_user_data
+
+  tags = {
+    Name = "jenkins-node"
   }
 }

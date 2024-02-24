@@ -1,4 +1,4 @@
-# Create a security group allowing SSH and HTTP access
+# Create a security group allowing SSH and HTTP access for Jenkins master and nodes
 resource "aws_security_group" "gymef_jenkins_sg" {
   name        = "jenkins_sg"
   description = "Security group for Jenkins master and nodes"

@@ -38,3 +38,14 @@ sudo apt install -y jenkins
 sudo systemctl start jenkins
 EOF
 }
+
+variable "jenkins_agent_secret" {
+  type    = string
+  default = "your_agent_secret_here"
+}
+
+variable "private_key_path" {
+  type    = string
+  default = "/path/to/your/private/key.pem"
+}
+
