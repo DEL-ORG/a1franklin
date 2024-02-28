@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: my-cronjob
+spec:
+  schedule: "*/1 * * * *"  # Runs every minute, change this as per your requirement
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: backup
+            image: devopseasylearning/s3backup:v1.0.1
+            envFrom:
+            - configMapRef:
+                name: postgres-config
+            - secretRef:
+                name: aws-secret
+          restartPolicy: OnFailure
+
