@@ -17,9 +17,11 @@ variable "security_group_id" {
 }
 
 variable "master_password" {
-  description = "Master password for the RDS cluster"
+  description = "The master password for the RDS cluster"
   type        = string
-  default     = "Pssw0rd123!"
+  sensitive   = true
+  # You can set a default value if needed
+  # default     = "defaultpassword"
 }
 
 variable "common_tags" {
