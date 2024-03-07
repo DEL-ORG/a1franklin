@@ -1,0 +1,111 @@
+pipeline {
+    agent none
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '7'))
+        skipDefaultCheckout(true)
+        disableConcurrentBuilds()
+        timeout(time: 1, unit: 'MINUTES')
+        timestamps()
+    }
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: '')
+    }
+    stages {
+        stage('Checkout') {
+            agent {
+                docker {
+                    image 'your_custom_image:tag'
+                }
+            }
+            steps {
+                dir("${WORKSPACE}/code") {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "*/${params.BRANCH_NAME}"]],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[$class: 'LocalBranch']],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[
+                            url: 'https://github.com/devopstia/a1.git',
+                            credentialsId: 'set github-credential in jenkins'
+                        ]]
+                    ])
+                }
+            }
+        }
+        stage('Test UI') {
+            agent {
+                docker {
+                    image 'maven:devopseasylearning/maven-revive'
+                }
+            }
+            steps {
+                sh '''
+                    cd /code/REVIVE/src/ui
+                    mvn test 
+                '''
+            }
+        }
+        stage('Test Catalog') {
+            agent {
+                docker {
+                    image 'devopseasylearning/golang02-revive:v1.0.0'
+                }
+            }
+            steps {
+                sh '''
+                    cd /code/REVIVE/src/catalog
+                    go test ./...
+                '''
+            }
+        }
+        stage('Test Cart') {
+            agent {
+                docker {
+                    image 'devopseasylearning/maven-revive:v1.0.0'
+                }
+            }
+            steps {
+                sh '''
+                    cd /code/REVIVE/src/cart
+                    mvn test
+                '''
+            }
+        }
+        stage('Test Orders') {
+            agent {
+                docker {
+                    image 'devopseasylearning/maven-revive:v1.0.0'
+                }
+            }
+            steps {
+                sh '''
+                    cd /code/REVIVE/src/orders
+                    mvn test
+                '''
+            }
+        }
+        stage('Test Checkout') {
+            agent {
+                docker {
+                    image 'devopseasylearning/nodejs01-revive:v1.0.0'
+                }
+            }
+            steps {
+                sh '''
+                    cd /code/REVIVE/src/checkout
+                    # Add your checkout test commands here
+                '''
+            }
+        }
+    }
+    post {
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
+
