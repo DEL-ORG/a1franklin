@@ -1,5 +1,5 @@
 # how to avoid exposing password in RDS database (aurora postgres)
-master_password                 = var.master_password  # Use input variable here
+master_password = var.master_password  # Use input variable here
 
 variable "master_password" {
   description = "The master password for the RDS cluster"

@@ -7,8 +7,6 @@ subnet_ids = [
 
 security_group_id = "sg-03c77da029413afcd"
 
-master_password = "YourStrongPassword123!"
-
 common_tags = {
   id             = "9999"
   owner          = "gymef"
