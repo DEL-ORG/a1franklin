@@ -6,10 +6,10 @@ variable "master_password" {
   type        = string
   sensitive   = true
   # You can set a default value if needed
-  # default     = "defaultpassword"
+  # default     = "Pssw0rd123!"
 }
 # For example, you can set it via command-line flags:
-terraform apply -var 'db_master_password=mysecurepassword'
+terraform apply -var 'db_master_password=Pssw0rd123!'
 
 # Or, you can set it via environment variables:
 export TF_VAR_master_password=Pssw0rd123!
