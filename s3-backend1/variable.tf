@@ -21,7 +21,7 @@ variable "project_name" {
 variable "common_tags" {
   type = map(any)
   default = {
-    "id"             = "4001"
+    "id"             = "4002"
     "owner"          = "gymef"
     "teams"          = "gym"
     "environment"    = "dev"

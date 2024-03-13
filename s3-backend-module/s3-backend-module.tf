@@ -37,7 +37,7 @@ locals {
 }
 
 module "s3_backend" {
-  source = "git@github.com:DEL-ORG/a1franklin.git//s3-backend1?ref=main"
+  source = "github.com/DEL-ORG/a1franklin.git//s3-backend1?ref=main"
 
   aws_region_main   = local.aws_region_main
   aws_region_backup = local.aws_region_backup
