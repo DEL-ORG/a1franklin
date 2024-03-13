@@ -48,7 +48,7 @@ resource "aws_iam_policy" "replication" {
       {
         "Action" : [
           "s3:ReplicateObject",
-          "s3:ReplicateDelete"
+          # "s3:ReplicateDelete"
         ],
         "Effect" : "Allow",
         "Resource" : "${aws_s3_bucket.backup-bucket.arn}/*"
