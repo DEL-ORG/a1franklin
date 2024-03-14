@@ -9,3 +9,7 @@ output "private_subnet_id" {
 output "vpc_id" {
   value = aws_vpc.gymef_vpc.id
 }
+
+output "bastion_security_group_id" {
+  value = aws_security_group.bastion-sg.id
+}

@@ -42,3 +42,8 @@ variable "environment" {
   type    = string
   default = "dev"
 }
+
+variable "security_groups" {
+  type    = list(string)
+  default = ["sg-024cf8f69ed47f282"]
+}
