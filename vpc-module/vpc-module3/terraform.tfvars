@@ -22,4 +22,4 @@ aws_availability_zones = [
   "us-east-1c",
 ]
 
-environment = "prod"
+environment = "dev"

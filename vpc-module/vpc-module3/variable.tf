@@ -40,5 +40,5 @@ variable "aws_availability_zones" {
 
 variable "environment" {
   type    = string
-  default = "prod"
+  default = "dev"
 }
