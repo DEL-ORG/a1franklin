@@ -13,13 +13,13 @@ variable "project_name" {
 variable "public_subnet_ids" {
   description = "List of public subnet IDs"
   type        = list(string)
-  default     = ["subnet-0271bbde0398b033c", "subnet-0d1175dcfca0ddaa0", "subnet-03f53162d2b2b2347"]
+  default     = [""]
 }
 
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
-  default     = ["subnet-0126a7bddda993a7d", "subnet-029e854674db8ffc3", "subnet-0686a09f8fb681caa"]
+  default     = [""]
 }
 
 
