@@ -79,10 +79,10 @@ variable "force_update_version" {
   default     = false
 }
 
-# variable "instance_types " {
-#   type        = list(string)
-#   default     = ["t3.small"]
-# }
+variable "instance_types" {
+  type        = list(string)
+  default     = ["t3.small"]
+}
 
 variable "common_tags" {
   type = map(any)
