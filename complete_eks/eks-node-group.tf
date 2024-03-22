@@ -75,13 +75,13 @@ resource "aws_eks_node_group" "nodes_general" {
   # Configuration block with scaling settings
   scaling_config {
     # Desired number of worker nodes.
-    desired_size = 1
+    desired_size = var.desired_size
 
     # Maximum number of worker nodes.
-    max_size = 1
+    max_size = var.max_size 
 
     # Minimum number of worker nodes.
-    min_size = 1 
+    min_size = var.min_size
   }
 
   # Type of Amazon Machine Image (AMI) associated with the EKS Node Group.

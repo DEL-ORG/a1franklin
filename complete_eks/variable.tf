@@ -54,20 +54,20 @@ variable "private_subnet_ids" {
 #   default     = "ON_DEMAND"
 # }
 
-# variable "desired_size" {
-#   type        = number
-#   default     = 1
-# }
+variable "desired_size" {
+  type        = number
+  default     = 1
+}
 
-# variable "max_size " {
-#   type        = number
-#   default     = 1
-# }
+variable "max_size" {
+  type        = number
+  default     = 1
+}
 
-# variable "min_size " {
-#   type        = number
-#   default     = 1
-# }
+variable "min_size" {
+  type        = number
+  default     = 1
+}
 
 variable "disk_size" {
   type        = number
