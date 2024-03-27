@@ -8,13 +8,13 @@ endpoint_public_access = true
 
 # List of public subnet IDs
 public_subnet_ids = [
-    "subnet-0a8d58fa650f29002", 
-    "subnet-04d2912aa21743466"]
+    "subnet-0b632a0db16d4bedd", 
+    "subnet-0a2445dd42a729270"]
 
 # List of private subnet IDs
 private_subnet_ids = [
-    "subnet-0b8cb43a3fe28c0c0",
-    "subnet-0785e6d5a77d94cb8"]
+    "subnet-035a74e818848b722",
+    "subnet-0ec244561c1592740"]
 
 # Disk size in GiB for worker nodes
 disk_size = 20

@@ -26,4 +26,4 @@ aws_availability_zones = [
 
 environment = "dev"  # Environment name.
 
-security_groups = [ "sg-00e5c216299961778"]  # List of security group IDs.
+security_groups = [ "sg-08274124f283c3edc"]  # List of security group IDs.
