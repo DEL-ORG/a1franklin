@@ -4,19 +4,9 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "instance_type_master" {
+variable "instance_type" {
   type    = string
   default = "t2.micro"
-}
-
-variable "instance_type_node" {
-  type    = string
-  default = "t2.micro"
-}
-
-variable "ami" {
-  type    = string
-  default = "ami-07761f3ae34c4478d"
 }
 
 variable "key_name" {
@@ -49,3 +39,22 @@ variable "private_key_path" {
   default = "/path/to/your/private/key.pem"
 }
 
+variable "security_group_id" {
+  type    = string
+  default = "sg-03c77da029413afcd"
+}
+
+
+variable "common_tags" {
+  type        = map(any)
+  description = "Common tags to be applied to all resources."
+  default = {
+    "id"             = "6666"
+    "owner"          = "Franklin"
+    "teams"          = "DEL"
+    "environment"    = "dev"
+    "project"        = "del"
+    "create_by"      = "Terraform"
+    "cloud_provider" = "aws"
+  }
+}
