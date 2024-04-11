@@ -62,7 +62,7 @@ pipeline {
             }
             unstable {
                 slackSend color: '#ECB22E',
-                channel: 'a1franklin', 
+                channel: 'revive', 
                 message: "*Revive Project Build Status*" +
                 "\n Project Name: Revive-project" +
                 "\n Job Name: ${env.JOB_NAME}" +
