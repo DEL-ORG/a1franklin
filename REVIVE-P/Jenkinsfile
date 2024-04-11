@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '7'))
+        disableConcurrentBuilds()
+        timeout(time: 10, unit: 'MINUTES')
+        timestamps()
+    }
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
+    }
+    
+    stages {
+        stage('Clone Repository') {
+            steps {
+                echo "Cloning repository..."
+                checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/yourusername/yourrepository.git']]])
+            }
+        }
+        stage('Stage 1') {
+            steps {
+                echo "Building branch: ${params.BRANCH_NAME}"
+                // Add your build steps here
+            }
+        }
+        stage('Stage 2') {
+            steps {
+                // Add more stages as needed
+            }
+        }
+    }
+}
