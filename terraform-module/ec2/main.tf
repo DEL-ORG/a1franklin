@@ -19,3 +19,5 @@ module "ec2_instance" {
     "cloud_provider" = "aws"
   }
 }
+
+
