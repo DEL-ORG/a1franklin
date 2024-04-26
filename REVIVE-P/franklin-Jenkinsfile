@@ -48,64 +48,8 @@ pipeline {
             }        
         }
         
-        stage('unit-test ui') {
-            agent {
-                docker {
-                    image 'franklinagbanyo/maven-revive-ui:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd REVIVE-P/src/ui
-                    mvn test -DskipTests=true
-                '''
-            }       
-        }
+        // Add other stages as needed
         
-        stage('unit-test orders') {
-            agent {
-                docker {
-                    image 'franklinagbanyo/order-maven-revive:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd REVIVE-P/src/orders
-                    mvn test -DskipTests=true
-                '''
-            }
-        }
-        
-        stage('Test maven-cart') {
-            agent {
-                docker {
-                    image 'franklinagbanyo/nodejs01-revive:v1.0.0'
-                }
-            }
-            steps {
-                sh '''
-                    cd REVIVE-P/src/cart/
-                    mvn test -Dmaven.test.skip=true --quiet
-                '''
-            }
-        }
-        
-        stage('unit-test checkout') {
-            agent {
-                docker {
-                    image 'franklin/nodejs01-revive:v1.0.0'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                sh '''
-                    cd REVIVE-P/src/checkout 
-                    npm install
-                '''
-            }            
-        }
     }
 
     post {
