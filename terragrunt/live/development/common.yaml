@@ -1,4 +1,4 @@
 ---
-environment : "development" 
-assetid: "3000"
+environment : "dev" 
+assetid: "3008"
 project: "del"

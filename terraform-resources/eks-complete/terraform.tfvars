@@ -7,14 +7,14 @@ endpoint_public_access = true
 # gymef_subnet_id = ["subnet-12345678", "subnet-87654321"]
 
 # List of public subnet IDs
-public_subnet_ids = [
-    "subnet-0b632a0db16d4bedd", 
-    "subnet-0a2445dd42a729270"]
+# public_subnet_ids = [
+#     "subnet-0b632a0db16d4bedd", 
+#     "subnet-0a2445dd42a729270"]
 
-# List of private subnet IDs
-private_subnet_ids = [
-    "subnet-035a74e818848b722",
-    "subnet-0ec244561c1592740"]
+# # List of private subnet IDs
+# private_subnet_ids = [
+#     "subnet-035a74e818848b722",
+#     "subnet-0ec244561c1592740"]
 
 # Disk size in GiB for worker nodes
 disk_size = 20

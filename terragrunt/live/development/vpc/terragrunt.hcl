@@ -1,5 +1,5 @@
 terraform {
-  source = "../../../../terraform-module//vpc"
+  source = "../../../../terraform-resources//vpc-only-02"
 }
 
 # Include all settings from the root terragrunt.hcl file

@@ -3,7 +3,7 @@ resource "aws_instance" "vm" {
   instance_type          = var.instance_type
   key_name               = var.key_name
   vpc_security_group_ids = [var.vpc_security_group_ids[0]] # Accessing the first element of the list
-  subnet_id              = var.subnet_id
+  subnet_id              =var.subnet_id
 
   root_block_device {
     volume_size = var.volume_size

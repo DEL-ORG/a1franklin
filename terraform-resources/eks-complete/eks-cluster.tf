@@ -30,7 +30,7 @@ resource "aws_eks_cluster" "gymef-eks-cluster" {
   vpc_config {
     endpoint_private_access = var.endpoint_private_access
     endpoint_public_access  = var.endpoint_public_access
-    subnet_ids              = var.public_subnet_ids
+    subnet_ids              = data.aws_subnets.public_subnets.ids
   }
   depends_on = [
     aws_iam_role_policy_attachment.gymef_iam_role_policy_attachment
