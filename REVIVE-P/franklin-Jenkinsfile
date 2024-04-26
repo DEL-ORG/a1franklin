@@ -12,8 +12,6 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
     
-
-    
     stages {
         stage('Clone Repository') {
             steps {
@@ -27,7 +25,11 @@ pipeline {
                 DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
             }
             steps {
-                sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKERHUB_CREDENTIALS --password-stdin"
+                script {
+                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_LOGIN')]) {
+                        sh "echo \$DOCKER_LOGIN | docker login -u \$DOCKER_LOGIN --password-stdin"
+                    }
+                }
             }
         }
         
