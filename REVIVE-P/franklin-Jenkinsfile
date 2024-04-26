@@ -12,6 +12,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
     
+    
     stages {
         stage('Clone Repository') {
             steps {
