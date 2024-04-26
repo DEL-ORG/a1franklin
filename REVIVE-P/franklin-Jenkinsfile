@@ -22,7 +22,7 @@ pipeline {
         
         stage('Login to DockerHub') {
             environment {
-                DOCKERHUB_CREDENTIALS = credentials('Dockerhub-jenkins')
+                DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
             }
             steps {
                 sh "echo $DOCKERHUB_CREDENTIALS | docker login -u $DOCKERHUB_CREDENTIALS --password-stdin"
