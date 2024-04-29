@@ -19,7 +19,7 @@ pipeline {
         stage('Clone Repository (SSH)') {
             steps {
                 echo "Cloning repository..."
-                withCredentials([sshUserPrivateKey(credentialsId: 'SSH_CREDENTIALS', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'github-jenkins', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
                     sh """
                         mkdir -p ~/.ssh
                         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
