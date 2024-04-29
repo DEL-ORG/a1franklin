@@ -106,4 +106,4 @@ pipeline {
                      "\n Build url : ${env.BUILD_URL}"
         }   
     }
-}
+
