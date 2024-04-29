@@ -22,6 +22,19 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]])
             }
         }
+    }
+
+
+    // stages {
+    //     stage('Clone Repository') {
+    //         steps {
+    //             script {
+    //                 git credentialsId: 'github-jenkins',
+    //                     url: 'git@github.com:DEL-ORG/a1franklin.git',
+    //                     branch: "${params.BRANCH_NAME}"
+    //             }
+    //         }
+    //     }
 
 
         stage('Login to DockerHub') {
@@ -34,8 +47,121 @@ pipeline {
                     """
                 }
             }
+     }
+
+        
+
+        //  stage('test ui') {
+        //     agent {
+        //      docker {
+        //        image 'franklinagbanyo/order-maven-revive:v1.0.0'
+        //        args '-u root:root'
+        //     }    
+        // } 
+        //     steps {
+        //         sh '''
+        //     cd REVIVE/src/ui
+        //     mvn test -DskipTests=true
+        //         '''
+        //     }
+        
+        // }
+
+
+        
+    }
+
+    post {
+        success {
+            slackSend color: '#2EB67D',
+            channel: 'a1franklin', 
+            message: "*REVIVE Project Build Status*" +
+                     "\n Project Name: REVIVE" +
+                     "\n Job Name: ${env.JOB_NAME}" +
+                     "\n Build number: ${currentBuild.displayName}" +
+                     "\n Build Status : *SUCCESS*" +
+                     "\n Build url : ${env.BUILD_URL}"
+        }
+        failure {
+            slackSend color: '#E01E5A',
+            channel: 'a1franklin',  
+            message: "*REVIVE Project Build Status*" +
+                     "\n Project Name: REVIVE" +
+                     "\n Job Name: ${env.JOB_NAME}" +
+                     "\n Build number: ${currentBuild.displayName}" +
+                     "\n Build Status : *FAILED*" +
+                     "\n Build User : *franklin*" +
+                     "\n Action : Please check the console output to fix this job IMMEDIATELY" +
+                     "\n Build url : ${env.BUILD_URL}"
+        }
+        unstable {
+            slackSend color: '#ECB22E',
+            channel: 'REVIVE', 
+            message: "*REVIVE Project Build Status*" +
+                     "\n Project Name: REVIVE" +
+                     "\n Job Name: ${env.JOB_NAME}" +
+                     "\n Build number: ${currentBuild.displayName}" +
+                     "\n Build Status : *UNSTABLE*" +
+                     "\n Action : Please check the console output to fix this job IMMEDIATELY" +
+                     "\n Build url : ${env.BUILD_URL}"
+        }   
+    }
+pipeline {
+    agent any
+    environment {
+        docker_hub_credential = credentials('DOCKERHUB_CREDENTIALS')
+    }
+    
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '7'))
+        disableConcurrentBuilds()
+        timeout(time: 10, unit: 'MINUTES')
+        timestamps()
+    }
+    
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
+    }
+    
+    stages {
+        stage('Clone Repository (SSH)') {
+            steps {
+                echo "Cloning repository..."
+                withCredentials([sshUserPrivateKey(credentialsId: 'SSH_CREDENTIALS', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
+                    sh """
+                        mkdir -p ~/.ssh
+                        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+                        chmod 600 ~/.ssh/id_rsa
+                        ssh-keyscan github.com >> ~/.ssh/known_hosts
+                    """
+                    checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'git@github.com:DEL-ORG/a1franklin.git']]])
+                }
+            }
         }
 
+
+        // stage('Clone Repository (HTTP)') {
+        //     steps {
+        //         echo "Cloning repository..."
+        //         checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]])
+        //     }
+        // }
+
+
+        stage('Login to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS',
+                 usernameVariable: 'DOCKERHUB_USERNAME',
+                  passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    sh """
+                         docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                    """
+                }
+            }
+     }
+
+    // Add more stages as needed
+        
     }
 
     post {
@@ -74,3 +200,5 @@ pipeline {
         }   
     }
 }
+
+
