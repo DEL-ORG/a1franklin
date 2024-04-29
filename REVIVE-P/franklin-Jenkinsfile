@@ -51,21 +51,21 @@ pipeline {
 
         
 
-         stage('test ui') {
-            agent {
-             docker {
-               image 'franklinagbanyo/order-maven-revive:v1.0.0'
-               args '-u root:root'
-            }    
-        } 
-            steps {
-                sh '''
-            cd REVIVE/src/ui
-            mvn test -DskipTests=true
-                '''
-            }
+        //  stage('test ui') {
+        //     agent {
+        //      docker {
+        //        image 'franklinagbanyo/order-maven-revive:v1.0.0'
+        //        args '-u root:root'
+        //     }    
+        // } 
+        //     steps {
+        //         sh '''
+        //     cd REVIVE/src/ui
+        //     mvn test -DskipTests=true
+        //         '''
+        //     }
         
-        }
+        // }
 
 
         
