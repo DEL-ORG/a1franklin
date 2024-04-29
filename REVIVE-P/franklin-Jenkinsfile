@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        docker_hub_credential = credentials('DOCKERHUB_CREDENTIALS')
+    }
     
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -19,19 +22,20 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]])
             }
         }
-        
+
+
         stage('Login to DockerHub') {
-            environment {
-                DOCKERHUB_CREDENTIALS = credentials('DOCKERHUB_CREDENTIALS')
-            }
             steps {
-                script {
-                    withCredentials([string(credentialsId: DOCKERHUB_CREDENTIALS, variable: 'DOCKER_LOGIN')]) {
-                        sh "echo \$DOCKER_LOGIN | docker login -u \$DOCKER_LOGIN --password-stdin"
-                    }
+                withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS',
+                 usernameVariable: 'DOCKERHUB_USERNAME',
+                  passwordVariable: 'DOCKERHUB_PASSWORD')]) {
+                    sh """
+                         docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+                    """
                 }
             }
-        }
+     }
+
         
         stage('catalog unit-test') {
             agent {
