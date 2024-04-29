@@ -22,19 +22,6 @@ pipeline {
                 checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]])
             }
         }
-    }
-
-
-    // stages {
-    //     stage('Clone Repository') {
-    //         steps {
-    //             script {
-    //                 git credentialsId: 'github-jenkins',
-    //                     url: 'git@github.com:DEL-ORG/a1franklin.git',
-    //                     branch: "${params.BRANCH_NAME}"
-    //             }
-    //         }
-    //     }
 
 
         stage('Login to DockerHub') {
@@ -47,28 +34,8 @@ pipeline {
                     """
                 }
             }
-     }
+        }
 
-        
-
-        //  stage('test ui') {
-        //     agent {
-        //      docker {
-        //        image 'franklinagbanyo/order-maven-revive:v1.0.0'
-        //        args '-u root:root'
-        //     }    
-        // } 
-        //     steps {
-        //         sh '''
-        //     cd REVIVE/src/ui
-        //     mvn test -DskipTests=true
-        //         '''
-        //     }
-        
-        // }
-
-
-        
     }
 
     post {
@@ -106,5 +73,4 @@ pipeline {
                      "\n Build url : ${env.BUILD_URL}"
         }   
     }
-
-
+}
