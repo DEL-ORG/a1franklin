@@ -15,26 +15,26 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
     
+    // stages {
+    //     stage('Clone Repository') {
+    //         steps {
+    //             echo "Cloning repository..."
+    //             checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]])
+    //         }
+    //     }
+    // }
+
+
     stages {
         stage('Clone Repository') {
             steps {
-                echo "Cloning repository..."
-                checkout([$class: 'GitSCM', branches: [[name: "${params.BRANCH_NAME}"]], userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]])
+                script {
+                    git credentialsId: 'github-jenkins',
+                        url: 'git@github.com:DEL-ORG/a1franklin.git',
+                        branch: "${params.BRANCH_NAME}"
+                }
             }
         }
-    }
-
-
-    //  stages {
-    //     stage('Clone Repository') {
-    //         steps {
-    //             script {
-    //                 git credentialsId: 'github-jenkins',
-    //                     url: 'git@github.com:DEL-ORG/a1franklin.git',
-    //                     branch: "${params.BRANCH_NAME}"
-    //             }
-    //         }
-    //     }
 
 
         stage('Login to DockerHub') {
@@ -106,4 +106,5 @@ pipeline {
                      "\n Build url : ${env.BUILD_URL}"
         }   
     }
+}
 
