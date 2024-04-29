@@ -37,22 +37,38 @@ pipeline {
      }
 
         
-        stage('catalog unit-test') {
+        // stage('catalog unit-test') {
+        //     agent {
+        //         docker {
+        //             image 'franklinagbanyo/nodejs01-revive:v1.0.0'
+        //             args '-u 0:0'
+        //         }
+        //     }
+        //     steps {
+        //         sh '''
+        //             cd REVIVE-P/src/catalog 
+        //             go test -buildscv=false
+        //         '''
+        //     }        
+        // }
+
+         stage('test ui') {
             agent {
-                docker {
-                    image 'franklinagbanyo/golang02-revive:v1.0.0'
-                    args '-u 0:0'
-                }
-            }
+             docker {
+               image 'franklinagbanyo/order-maven-revive:v1.0.0'
+               args '-u root:root'
+            }    
+        } 
             steps {
                 sh '''
-                    cd REVIVE-P/src/catalog 
-                    go test -buildscv=false
+            cd REVIVE/src/ui
+            mvn test -DskipTests=true
                 '''
-            }        
-        }
+            }
         
-        // Add other stages as needed
+        }
+
+
         
     }
 
