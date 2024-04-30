@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         docker_hub_credential = credentials('DOCKERHUB_CREDENTIALS')
-        github_credential = credentials(github-jenkins)
+        github_credential = credentials('github-jenkins')
     }
     
     options {
@@ -29,6 +29,8 @@ pipeline {
                               userRemoteConfigs: [[url: 'git@github.com:DEL-ORG/a1franklin.git']]]) 
                 }
             }
+        }
+        
         stage('Login to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS',
@@ -77,5 +79,4 @@ pipeline {
                      "\n Build url : ${env.BUILD_URL}"
         }   
     }
-}
 }
