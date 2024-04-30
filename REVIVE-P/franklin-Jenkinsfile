@@ -15,7 +15,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
     
-    // stages {
+     stages {
     //     stage('Clone Repository') {
     //         steps {
     //             echo "Cloning repository..."
