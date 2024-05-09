@@ -19,17 +19,13 @@ pipeline {
     stages {
        stage('Clone Repository') {
             steps {
-                withCredentials([usernamePrivateKey(credentialsId: 'github-jenkins',
-                 usernameVariable: 'GIT_USERNAME',
-                //   passphraseVariable: '',
-                  privateKeyVariable: 'GIT_SSH_KEY')]) {
-                    echo "Cloning repository..."
-                    checkout([$class: 'GitSCM', 
-                              branches: [[name: "${params.BRANCH_NAME}"]],
-                              userRemoteConfigs: [[url: 'git@github.com:DEL-ORG/a1franklin.git']]]) 
+                script {
+                    git credentialsId: 'github-jenkins',
+                        url: 'https://github.com/DEL-ORG/a1franklin.git',
+                        branch: "${params.BRANCH_NAME}"
                 }
-            }
-        }
+            }
+        }
         
         stage('Login to DockerHub') {
             steps {
