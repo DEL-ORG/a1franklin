@@ -15,6 +15,8 @@ pipeline {
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
+
+    
     
     stages {
        stage('Clone Repository') {
@@ -40,6 +42,83 @@ pipeline {
                 }
             }
         }
+
+        stage('unit-test ui') {
+            agent {
+             docker {
+               image 'franklinagbanyo/ui-maven:v1.0.0'
+               args '-u root:root'
+            }    
+        } 
+            steps {
+                sh '''
+            cd REVIVE-P/src/ui
+            mvn test -DskipTests=true
+                '''
+            }       
+        }
+
+
+         stages {
+        stage('Unit Test catalog') {
+            agent {
+                docker {
+                    image 'franklinagbanyo/golang:latest'
+                    args '-u root:root'
+                }
+            }
+            steps {
+                sh  
+                  '''
+                  cd  REVIVE-P/src/catalog
+                      go test -buildscv=false
+                '''
+                
+            }
+        }
+    }
+
+
+
+
+    
+
+
+
+       
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 
 
