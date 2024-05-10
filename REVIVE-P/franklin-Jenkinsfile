@@ -16,10 +16,8 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
 
-    
-    
     stages {
-       stage('Clone Repository') {
+        stage('Clone Repository') {
             steps {
                 script {
                     git credentialsId: 'github-jenkins',
@@ -27,10 +25,8 @@ pipeline {
                         branch: "${params.BRANCH_NAME}"
                 }
             }
-       }
-       
+        }
 
-        
         stage('Login to DockerHub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'DOCKERHUB_CREDENTIALS',
@@ -45,22 +41,21 @@ pipeline {
 
         stage('unit-test ui') {
             agent {
-             docker {
-               image 'franklinagbanyo/ui-maven:v1.0.0'
-               args '-u root:root'
-            }    
-        } 
+                docker {
+                    image 'franklinagbanyo/ui-maven:v1.0.0'
+                    args '-u root:root'
+                }
+            }
             steps {
-                sh
-                 """
-            cd REVIVE-P/src/ui
-            mvn test -DskipTests=true
-                """
-            }       
+                sh {
+                    """
+                    cd REVIVE-P/src/ui
+                    mvn test -DskipTests=true
+                    """
+                }
+            }
         }
 
-
-    
         stage('Unit Test catalog') {
             agent {
                 docker {
@@ -69,16 +64,17 @@ pipeline {
                 }
             }
             steps {
-                sh  
-                  """
-                  cd  REVIVE-P/src/catalog
-                      go test -buildscv=false
-                """
-                
+                sh {
+                    """
+                    cd  REVIVE-P/src/catalog
+                    go test -buildscv=false
+                    """
+                }
             }
         }
     }
 }
+
 
 
     post {
