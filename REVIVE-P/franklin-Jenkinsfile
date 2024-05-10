@@ -44,16 +44,16 @@ pipeline {
                 docker {
                     image 'franklinagbanyo/ui-maven:v1.0.0'
                     args '-u root:root'
-                }
-            }
+                }    
+            } 
             steps {
-                sh {
-                    """
-                    cd REVIVE-P/src/ui
-                    mvn test -DskipTests=true
+                script {
+                    sh """
+                        cd REVIVE-P/src/ui
+                        mvn test -DskipTests=true
                     """
                 }
-            }
+            }       
         }
 
         stage('Unit Test catalog') {
@@ -64,18 +64,15 @@ pipeline {
                 }
             }
             steps {
-                sh {
-                    """
-                    cd  REVIVE-P/src/catalog
-                    go test -buildscv=false
+                script {
+                    sh """
+                        cd REVIVE-P/src/catalog
+                        go test -buildscv=false
                     """
                 }
             }
         }
     }
-}
-
-
 
     post {
         success {
@@ -112,4 +109,4 @@ pipeline {
                      "\n Build url : ${env.BUILD_URL}"
         }   
     }
-
+}
