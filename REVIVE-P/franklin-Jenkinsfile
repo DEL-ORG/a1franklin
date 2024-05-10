@@ -42,7 +42,7 @@ pipeline {
         stage('unit-test ui') {
             agent {
                 docker {
-                    image 'franklinagbanyo/ui-maven:v1.0.0'
+                    image 'franklinagbanyo/ui-maven:latest'
                     args '-u root:root'
                 }    
             } 
