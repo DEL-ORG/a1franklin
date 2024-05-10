@@ -51,10 +51,11 @@ pipeline {
             }    
         } 
             steps {
-                sh '''
+                sh
+                 """
             cd REVIVE-P/src/ui
             mvn test -DskipTests=true
-                '''
+                """
             }       
         }
 
@@ -69,10 +70,10 @@ pipeline {
             }
             steps {
                 sh  
-                  '''
+                  """
                   cd  REVIVE-P/src/catalog
                       go test -buildscv=false
-                '''
+                """
                 
             }
         }
