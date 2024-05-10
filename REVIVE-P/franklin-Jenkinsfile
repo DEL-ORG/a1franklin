@@ -59,7 +59,7 @@ pipeline {
         }
 
 
-         stages {
+    
         stage('Unit Test catalog') {
             agent {
                 docker {
