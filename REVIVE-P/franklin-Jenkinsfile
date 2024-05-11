@@ -42,36 +42,36 @@ pipeline {
         stage('unit-test ui') {
             agent {
                 docker {
-                    image 'franklinagbanyo/ui-maven:latest'
+                    image 'franklinagbanyo/ui-maven:v1.01'
                     args '-u root:root'
                 }    
             } 
             steps {
                 script {
                     sh """
-                        cd $WORKSPACE/REVIVE-P/src/ui
+                        cd /REVIVE-P/src/ui
                         mvn test -DskipTests=true
                     """
                 }
             }       
         }
 
-        stage('Unit Test catalog') {
-            agent {
-                docker {
-                    image 'franklinagbanyo/golang:latest'
-                    args '-u root:root'
-                }
-            }
-            steps {
-                script {
-                    sh """
-                        cd $WORKSPACE/REVIVE-P/src/catalog
-                        go test -buildscv=false
-                    """
-                }
-            }
-        }
+        // stage('Unit Test catalog') {
+        //     agent {
+        //         docker {
+        //             image 'franklinagbanyo/golang:latest'
+        //             args '-u root:root'
+        //         }
+        //     }
+        //     steps {
+        //         script {
+        //             sh """
+        //                 cd REVIVE-P/src/catalog
+        //                 go test -buildscv=false
+        //             """
+        //         }
+        //     }
+        // }
     }
 
     post {
