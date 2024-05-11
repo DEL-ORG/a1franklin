@@ -49,13 +49,13 @@ pipeline {
             steps {
                 script {
                     sh """
-                        cd /REVIVE-P/src/ui
+                        cd REVIVE-P/src/ui
                         mvn test -DskipTests=true
                     """
                 }
             }       
         }
-        
+
 
         // stage('Unit Test catalog') {
         //     agent {
