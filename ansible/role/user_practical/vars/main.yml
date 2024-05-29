@@ -1,9 +1,5 @@
 ---
-- hosts: all
-  become: yes
-  roles:
-    - user_management
-  vars:
+ vars:
     users:
       - name: jsmith
         home: "/home/jsmith"
