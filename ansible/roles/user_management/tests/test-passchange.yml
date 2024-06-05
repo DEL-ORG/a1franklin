@@ -1,0 +1,85 @@
+---
+- hosts: localhost
+  remote_user: root
+
+  vars:
+    debug_enabled_default: false
+
+    users:
+      - username: testuser101
+        comment: Test User 100
+        shell: /bin/bash
+        ssh_key: |
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx8crAHG/a9QBD4zO0ZHIjdRXy+ySKviXVCMIJ3/NMIAAzDyIsPKToUJmIApHHHF1/hBllqzBSkPEMwgFbXjyqTeVPHF8V0iq41n0kgbulJG testuser101@server1
+          ssh-rsa AAAA.... testuser101@server2
+        exclusive_ssh_key: yes
+        use_sudo: no
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser102
+        comment: Test User 101
+        groups: testnew102
+        shell: /bin/sh
+        use_sudo: yes
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser103
+        use_sudo: no
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser104
+        ssh_key: ssh-rsa AAABNEW.... test104@server
+        exclusive_ssh_key: yes
+        use_sudo: no
+        user_state: present
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser105
+        uid: 1099
+        primarygroup: group105primary
+        ssh_key: ssh-rsa AAAB.... test107@server
+        use_sudo: no
+        user_state: lock
+        servers:
+          - webserver
+          - database
+          - monitoring
+
+      - username: testuser106
+        user_state: present
+        primarygroup: group106primary
+        primarygid: 2222
+        groups: groupcommon
+        servers:
+          - webserver
+          - database
+
+      - username: testuser107
+        user_state: present
+        groups: groupcommon, testgroupweb
+        servers:
+          - webserver
+
+      - username: testuser107
+        user_state: present
+        groups: groupcommon, testgroupdb
+        servers:
+          - database
+
+  roles:
+    - ansible-role-create-users

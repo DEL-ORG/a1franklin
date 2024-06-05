@@ -1,0 +1,112 @@
+---
+- name: Check if users exist
+  user:
+     name: "{{ item }}"
+  check_mode: true
+  register: users_check
+  debug:
+    msg: "{{ item }} does not exist"
+  loop: "{{ users | map(attribute='name') | list }}"
+
+- name: Create new users
+  user:
+    name: "{{ item.name }}"
+    create_home: true
+    comment: "{{ item.comment | default(omit) }}"
+    uid: "{{ '10409' | random }}"
+    state: present
+    shell: "{{ item.shell | default('/bin/bash') }}"
+    generate_ssh_key: yes
+    ssh_key_bits: 2048
+    ssh_key_file: .ssh/id_rsa
+  loop: "{{ users }}"
+  when: item.name not in users_check.results
+
+
+
+
+- name: Manage sudoers file entries
+  copy:
+    dest: "/etc/sudoers.d/{{ item.name }}"
+    content: "{{ item.sudoers_content }}"
+    mode: '0440'
+  loop: "{{ users }}"
+  when: item.sudoers_content is defined
+
+
+- name: Disable users
+  user:
+    name: "{{ item }}"
+    shell: "/sbin/nologin"
+  loop: "{{ disable_users }}"
+
+
+
+- name: create primary groups
+  group:
+   name: "{{ item.groups }}"
+   gid: "{{ item.gid | default(omit) }}"
+   non_unique: false
+   state: "present"
+  loop: "{{ groups }}"
+  when: item.groups is defined
+
+- name: Check if users exist
+  user:
+     name: "{{ item.username }}"
+  check_mode: true
+  register: users_check
+  loop: "{{ users | map(attribute='name') | list }}"
+  when: state is present 
+
+- name: create users
+  user:
+   name: "{{ item.username }}"
+   comment: "{{ item.comment | default(omit) }}"
+   home: "/home/{{ item.name }}"
+   create_home: True
+   uid: 400
+   non_unique: false
+   shell: "{{ item.shell if item.shell is defined else default_shell }}"
+   state: present
+
+- name: add users to groups
+  user:
+    name: "{{ item.username }}"
+    groups: "{{ item.groups | join(',') }}"
+    append: yes
+  loop: "{{ users }}"
+  when: item.groups is defined
+
+- name: Generate SSH key
+  user:
+    name: "{{ item.username }}"
+    generate_ssh_key: "{{ item.generate_ssh_key | default(false) }}"
+    ssh_key_bits: "{{ item.ssh_key_bits | default(omit) }}"
+    ssh_key_file: "{{ item.ssh_key_file | default(.ssh/id_rsa) }}"
+  loop: '{{ users }}'
+  when: item.generate_ssh_key is defined else ""
+
+- name: add authorized SSH keys
+  authorized_key:
+    user: "{{ item.username }}"
+    state: present
+    key: "{{ item.ssh_key }}"
+  loop: "{{ users }}"
+  when: item.ssh_key is defined
+
+- name: Change user shells
+  user:
+    name: "{{ item.username }}"
+    shell: "{{ item.shell }}"
+  loop: "{{ change_shells }}"
+  when: item.shell is defined
+
+- name: Delete users
+  user:
+    name: "{{ item.username }}"
+    home: "{{ item.home }}"
+    remove: yes
+    state: absent
+  loop: "{{ delete_users }}"
+  when: item.state is absent
