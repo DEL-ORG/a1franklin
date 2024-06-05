@@ -8,7 +8,7 @@
         shell: /bin/bash
         groups: ['admin', 'users']
         sudoers_content: "afranklin ALL=(ALL) NOPASSWD:ALL"
-        ssh_key: "/home/afranklin/.ssh/id_rsa.pub"
+        ssh_key: "/home/afranklin/id_ed25519.pub"
       - name: bjones
         comment: Brendy Jones
         uid: 1060
@@ -23,7 +23,7 @@
         home: /home/evincent
         create_home: yes
         uid: 1050
-        ssh_key: "/home/evincent/.ssh/id_rsa.pub"
+        ssh_key: "/home/evincent/.ssh/id_ed25519.pub"
         groups: ['']
  disable_users:
       - name: afranklin
