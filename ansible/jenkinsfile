@@ -1,0 +1,67 @@
+pipeline {
+    agent any
+
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+    }
+
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'The branch to clone from the repository')
+    //    string(name: 'IMAGE_TAG', defaultValue: 'latest', description: 'The image tag to use')
+    }
+
+    stages {
+        stage('Install Ansible') {
+            steps {
+                script {
+                    // Call the function to install Ansible
+                    installAnsible()
+                }
+            }
+        }
+
+        stage('Clone Repository') {
+            steps {
+                script {
+                    git credentialsId: 'github-jenkins',
+                        url: 'https://github.com/DEL-ORG/a1franklin.git',
+                        branch: "${params.BRANCH_NAME}"
+                }
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                script {
+                    // Run the Ansible playbook
+                    ansiblePlaybook(
+                        playbook:  '/c/Users/senyo/frank/a1franklin/ansible' //'path/to/your/playbook.yml',
+                        inventory: '/c/Users/senyo/frank/a1franklin/ansible'     //'path/to/your/inventory'
+                    )
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'The playbook ran successfully.'
+        }
+        failure {
+            echo 'The playbook failed.'
+        }
+    }
+}
+
+// Define the function to install Ansible
+def installAnsible() {
+    sh '''
+    if ! command -v ansible >/dev/null 2>&1; then
+        echo "Installing Ansible..."
+        sudo apt update
+        sudo apt install -y ansible
+    else
+        echo "Ansible is already installed."
+    fi
+    '''
+}
