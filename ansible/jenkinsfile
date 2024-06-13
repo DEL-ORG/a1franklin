@@ -43,8 +43,8 @@ pipeline {
                 script {
                     // Run the Ansible playbook
                     ansiblePlaybook(
-                        playbook: '$WORKSPACE/ansible/a1franklin/ansible',
-                        inventory: '$WORKSPACE/ansible/a1franklin/inventory'
+                        playbook: '$WORKSPACE/ansible/a1franklin/ansible/playbook.yaml',
+                        inventory: '$WORKSPACE/ansible/a1franklin/inventory/inventory.yml'
                     )
                 }
             }
