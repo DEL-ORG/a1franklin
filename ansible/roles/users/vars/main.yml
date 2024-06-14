@@ -1,3 +1,45 @@
+# ---
+#  users:
+#       - name: afranklin
+#         home: "/home/afranklin"
+#         create_home: yes
+#         comment: Agbanyo Franklin
+#         uid: 1040
+#         shell: /bin/bash
+#         groups: ['admin', 'users']
+#         sudoers_content: "afranklin ALL=(ALL) NOPASSWD:ALL"
+#         ssh_key: "/home/afranklin/id_ed25519.pub"
+#       - name: bjones
+#         comment: Brendy Jones
+#         uid: 1060
+#         shell: /bin/sh
+#         groups: ['users']
+#         ssh_key: yes
+#       - name: tinnocent
+#         comment: Twizere Innocent
+#         shell: /sbin/nologin
+#       - name: evincent
+#         comment: Eric Vincent
+#         home: /home/evincent
+#         create_home: yes
+#         uid: 1050
+#         ssh_key: "/home/evincent/.ssh/id_ed25519.pub"
+#         groups: ['']
+#  disable_users:
+#       - name: afranklin
+#       - name: bjones
+#  delete_users:    
+#       - name: tinnocent
+#         home: /home/tinnocent
+#       - name: evincent
+#         home: /home/evincent
+#  change_shells:
+#       - name: bjones
+#         shell: /bin/bash
+
+
+
+
 ---
  users:
       - name: afranklin
@@ -8,7 +50,7 @@
         shell: /bin/bash
         groups: ['admin', 'users']
         sudoers_content: "afranklin ALL=(ALL) NOPASSWD:ALL"
-        ssh_key: "/home/afranklin/id_ed25519.pub"
+        ssh_key: "/home/afranklin/.ssh/id_rsa.pub"
       - name: bjones
         comment: Brendy Jones
         uid: 1060
@@ -23,7 +65,7 @@
         home: /home/evincent
         create_home: yes
         uid: 1050
-        ssh_key: "/home/evincent/.ssh/id_ed25519.pub"
+        ssh_key: "/home/evincent/.ssh/id_rsa.pub"
         groups: ['']
  disable_users:
       - name: afranklin
