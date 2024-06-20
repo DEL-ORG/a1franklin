@@ -58,8 +58,9 @@
     user: "{{ item.name }}"
     state: present
     #key: "{{ lookup('file', lookup('env','HOME') + '/' + ('env', 'ssh_public_key') }}"
-    #key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-    key: "{{ lookup('file', lookup('env','HOME') + '/' + {{ item.name }} + '/.ssh/id_rsa.pub') }}"
+    ##key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+    #key: "{{ lookup('file', lookup('env','HOME') + '/' + {{ item.name }} + '/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', lookup('env','HOME') ~ '/' ~ item.name ~ '/.ssh/id_rsa.pub') }}"
   loop: "{{ users }}"
   when: item.ssh_key is defined
 # 
