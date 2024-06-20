@@ -3,5 +3,5 @@ all:
     practical:
       hosts:
         devops1:
-          ansible_host: 107.22.2.165
+          ansible_host: 34.224.169.20
 
