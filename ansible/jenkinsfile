@@ -54,7 +54,7 @@ pipeline {
                     script {
                         sh '''
                         cd "${WORKSPACE}/ansible/ansible"
-                        ansible-playbook -i inventory.yml -e "ANSIBLE_CONFIG=${ANSIBLE_CONFIG}" playbook.yml --private-key=$SSH_PRIVATE_KEY
+                        ansible-playbook -i inventory.yml -e "ANSIBLE_CONFIG=${ANSIBLE_CONFIG}" playbook.yml --private-key=$SSH_PRIVATE_KEY -vvv
                         '''
                     }
                 }
