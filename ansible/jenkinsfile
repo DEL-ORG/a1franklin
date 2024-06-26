@@ -13,24 +13,24 @@ pipeline {
     }
 
     stages {
-        stage('Install Ansible and Dependencies') {
-            steps {
-                script {
-                    installAnsible()
-                }
-            }
-        }
+        //stage('Install Ansible and Dependencies') {
+        //    steps {
+        //        script {
+        //            installAnsible()
+        //        }
+        //    }
+        //}
 
-        stage('Create ansible user and configure sudo') {
-            steps {
-                script {
-                    sh '''
-                    sudo useradd -m -s /bin/bash ansible || true
-                    echo 'ansible ALL=(ALL) NOPASSWD:ALL' | sudo tee -a /etc/sudoers.d/ansible || true
-                    '''
-                }
-            }
-        }
+        //stage('Create ansible user and configure sudo') {
+        //    steps {
+        //        script {
+        //            sh '''
+        //            sudo useradd -m -s /bin/bash ansible || true
+        //            echo 'ansible ALL=(ALL) NOPASSWD:ALL' | sudo tee -a /etc/sudoers.d/ansible || true
+        //            '''
+        //        }
+        //    }
+        //}
 
         stage('Checkout') {
             steps {
@@ -75,16 +75,16 @@ pipeline {
 }
 
 // Function to install Ansible and dependencies
-def installAnsible() {
-    sh '''
-    sudo apt update -y
-    sudo apt install -y python3 python3-pip
-    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-    python3 get-pip.py --user
-    python3 -m pip install --user ansible
-    python3 -m pip install --user ansible-core
-    pip3 install --user boto3
-    pip install boto3 botocore
-    /usr/bin/python3 -m pip install boto3 botocore
-    '''
-}
+//def installAnsible() {
+//    sh '''
+//    sudo apt update -y
+//    sudo apt install -y python3 python3-pip
+//    curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+//    python3 get-pip.py --user
+//    python3 -m pip install --user ansible
+//    python3 -m pip install --user ansible-core
+//    pip3 install --user boto3
+//    pip install boto3 botocore
+//    /usr/bin/python3 -m pip install boto3 botocore
+//    '''
+//}
