@@ -70,7 +70,7 @@ pipeline {
                         sh '''
                             export PATH=$PATH:~/.local/bin
                             cd ansible
-                            ansible-playbook -i inventory.yml playbook.yml --private-key=$SSH_PRIVATE_KEY -vvv
+                            ansible-playbook -i inventory.yml playbook.yml --private-key=$SSH_PRIVATE_KEY 
                         '''
                     }
                 }
@@ -106,3 +106,30 @@ pipeline {
 //    /usr/bin/python3 -m pip install boto3 botocore
 //    '''
 //}
+
+
+
+
+
+pipeline {
+    agent {
+        label 'static-node'
+    }
+
+    stages {
+        stage('Test a Ping Pong') {
+            steps {
+                script {
+                    sh '''
+                        ansible 54.226.234.121 -m ping
+                    '''
+                }
+            }
+        }
+    }
+}
+
+  
+
+
+
