@@ -52,7 +52,7 @@ pipeline {
 
         stage('Run Ansible Playbook') {
             steps {
-                withCredentials([sshUserPrivateKey(credentialsId: 'ansible-test', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
+                withCredentials([sshUserPrivateKey(credentialsId: 'ansible-static', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
                     script {
                         sh '''
                         cd "${WORKSPACE}/ansible/ansible"
