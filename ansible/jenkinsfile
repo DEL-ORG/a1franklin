@@ -50,18 +50,36 @@ pipeline {
             }
         }
 
-        stage('Run Ansible Playbook') {
+        //stage('Run Ansible Playbook') {
+        //    steps {
+        //        withCredentials([sshUserPrivateKey(credentialsId: 'ansible-static', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
+        //            script {
+        //                sh '''
+        //                cd "${WORKSPACE}/ansible/ansible"
+        //                ansible-playbook -i inventory.yml -e "ANSIBLE_CONFIG=${ANSIBLE_CONFIG}" playbook.yml --private-key=$SSH_PRIVATE_KEY 
+        //                '''
+        //            }
+        //        }
+        //    }
+        //}
+
+         stage('Run Ansible Playbook') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'ansible-static', keyFileVariable: 'SSH_PRIVATE_KEY')]) {
                     script {
                         sh '''
-                        cd "${WORKSPACE}/ansible/ansible"
-                        ansible-playbook -i inventory.yml -e "ANSIBLE_CONFIG=${ANSIBLE_CONFIG}" playbook.yml --private-key=$SSH_PRIVATE_KEY 
+                            export PATH=$PATH:~/.local/bin
+                            cd ansible
+                            ansible-playbook -i inventory.yml playbook.yml --private-key=$SSH_PRIVATE_KEY -vvv
                         '''
                     }
                 }
             }
         }
+
+
+
+
     }
 
     post {
