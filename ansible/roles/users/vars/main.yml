@@ -14,6 +14,7 @@
         uid: 1060
         shell: /bin/sh
         groups: ['users']
+        sudoers_content: "bjones ALL=(ALL) NOPASSWD:ALL"
         ssh_key: yes
       - name: tinnocent
         comment: Twizere Innocent
