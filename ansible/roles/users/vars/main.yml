@@ -5,6 +5,7 @@
         create_home: yes
         comment: Agbanyo Franklin
         uid: 1040
+        become: true
         shell: /bin/bash
         groups: ['admin', 'users']
         sudoers_content: "afranklin ALL=(ALL) NOPASSWD:ALL"
