@@ -41,6 +41,8 @@
     user: "{{ item.name }}"
     state: present
     key: "{{ lookup('file', '/home/' + item.name + '/.ssh/id_rsa.pub') }}"
+    path: /etc/ssh/authorized_keys/{{ item.name }} 
+    manage_dir: False   
   loop: "{{ users }}"
   when: item.ssh_key is defined
 
