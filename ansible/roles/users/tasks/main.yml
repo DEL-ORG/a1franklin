@@ -53,17 +53,25 @@
   loop: "{{ users }}"
   when: item.ssh_key is defined
 # 
+#- name: Add SSH keys
+#  authorized_key:
+#    user: "{{ item.name }}"
+#    state: present
+    #key: "{{ lookup('file', lookup('env','HOME') + '/' + ('env', 'ssh_public_key') }}"
+    ##key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+    #key: "{{ lookup('file', lookup('env','HOME') + '/' + {{ item.name }} + '/.ssh/id_rsa.pub') }}"
+#    key: "{{ lookup('file', '/home/' + item.name + '/.ssh/id_rsa.pub') }}"
+
 - name: Add SSH keys
   authorized_key:
     user: "{{ item.name }}"
     state: present
-    #key: "{{ lookup('file', lookup('env','HOME') + '/' + ('env', 'ssh_public_key') }}"
-    ##key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-    #key: "{{ lookup('file', lookup('env','HOME') + '/' + {{ item.name }} + '/.ssh/id_rsa.pub') }}"
     key: "{{ lookup('file', '/home/' + item.name + '/.ssh/id_rsa.pub') }}"
-
   loop: "{{ users }}"
-  when: item.ssh_key is defined
+  when: item.ssh_key | default(false)
+
+ # loop: "{{ users }}"
+ # when: item.ssh_key is defined
 # 
 - name: Manage sudoers file entries
   copy:
