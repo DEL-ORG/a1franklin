@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     git credentialsId: 'github-jenkins',
-                        url: 'https://github.com/DEL-ORG/a1franklin.git',
+                        url: 'git@github.com:DEL-ORG/a1franklin.git',
                         branch: "${params.BRANCH_NAME}"
                 }
             }
