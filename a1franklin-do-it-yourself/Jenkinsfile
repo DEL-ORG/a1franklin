@@ -20,7 +20,7 @@ pipeline {
                         branches: [[name: '*/main']],
                         doGenerateSubmoduleConfigurations: false,
                         extensions: [],
-                        userRemoteConfigs: [[url: 'https://github.com/your-repo/your-project.git']]
+                        userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]
                     ])
                 }
             }
