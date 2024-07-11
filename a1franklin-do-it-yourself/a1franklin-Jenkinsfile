@@ -3,8 +3,11 @@ pipeline {
     options {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '3', numToKeepStr: '3'))
         disableConcurrentBuilds()
-        timeout(time: 1, unit: 'HOURS')
+        timeout(time: 7, unit: 'HOURS')
         timestamps()
+    }
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
 
     triggers {
@@ -12,19 +15,16 @@ pipeline {
     }
 
     stages {
-        stage('Webhook') {
+        stage('Clone Repository') {
             steps {
                 script {
-                    // Checkout code from GitHub
-                    checkout([$class: 'GitSCM',
-                        branches: [[name: '*/main']],
-                        doGenerateSubmoduleConfigurations: false,
-                        extensions: [],
-                        userRemoteConfigs: [[url: 'https://github.com/DEL-ORG/a1franklin.git']]
-                    ])
+                    git credentialsId: 'github-jenkins',
+                        url: 'https://github.com/DEL-ORG/a1franklin.git',
+                        branch: "${params.BRANCH_NAME}"
                 }
             }
         }
+
 
         stage('Test') {
             steps {
