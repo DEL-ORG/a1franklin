@@ -12,7 +12,6 @@ pipeline {
 
     triggers {
         githubPush() // This will trigger the pipeline on GitHub push events
-    }
 
     stages {
         stage('Clone Repository') {
