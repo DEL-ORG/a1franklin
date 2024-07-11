@@ -1,13 +1,31 @@
 pipeline {
-agent any
+    agent any
     options {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '3', numToKeepStr: '3'))
         disableConcurrentBuilds()
         timeout(time: 1, unit: 'HOURS')
-        timestamps() // Corrected syntax here
+        timestamps()
+    }
+
+    triggers {
+        githubPush() // This will trigger the pipeline on GitHub push events
     }
 
     stages {
+        stage('Webhook') {
+            steps {
+                script {
+                    // Checkout code from GitHub
+                    checkout([$class: 'GitSCM',
+                        branches: [[name: '*/main']],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [],
+                        userRemoteConfigs: [[url: 'https://github.com/your-repo/your-project.git']]
+                    ])
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 sh '''
@@ -18,7 +36,6 @@ agent any
                 '''
             }
         }
-
 
         stage('Validate') {
             steps {
@@ -48,11 +65,17 @@ agent any
             }
         }
 
-
-
         stage('Deploy') {
             steps {
                 sh 'pwd'
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                // Add your post-build actions here
             }
         }
     }
