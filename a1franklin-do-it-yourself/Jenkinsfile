@@ -12,13 +12,14 @@ pipeline {
 
     triggers {
         githubPush() // This will trigger the pipeline on GitHub push events
+    }
 
     stages {
         stage('Clone Repository') {
             steps {
                 script {
-                    git credentialsId: 'github-jenkins',
-                        url: 'https://github.com/DEL-ORG/a1franklin.git',
+                    git credentialsId: 'github-jenkins-ssh',
+                        url: 'git@github.com:DEL-ORG/a1franklin.git',
                         branch: "${params.BRANCH_NAME}"
                 }
             }
