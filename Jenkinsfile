@@ -18,7 +18,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    git credentialsId: 'github-jenkins-ssh',
+                    git credentialsId: 'github-jenkins',
                         url: 'git@github.com:DEL-ORG/a1franklin.git',
                         branch: "${params.BRANCH_NAME}"
                 }
