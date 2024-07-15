@@ -28,6 +28,8 @@ pipeline {
                     steps {
                         dir('do-it-yourself/src/ui') {
                             script {
+                                // Ensure gradlew is executable
+                                sh 'chmod +x ./gradlew'
                                 // Build and test UI microservice
                                 sh './gradlew clean build test'
                             }
@@ -38,6 +40,8 @@ pipeline {
                     steps {
                         dir('do-it-yourself/src/cart') {
                             script {
+                                // Ensure gradlew is executable
+                                sh 'chmod +x ./gradlew'
                                 // Build and test Cart microservice
                                 sh './gradlew clean build test'
                             }
@@ -48,6 +52,8 @@ pipeline {
                     steps {
                         dir('do-it-yourself/src/orders') {
                             script {
+                                // Ensure gradlew is executable
+                                sh 'chmod +x ./gradlew'
                                 // Build and test Orders microservice
                                 sh './gradlew clean build test'
                             }
