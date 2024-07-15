@@ -18,12 +18,14 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    git credentialsId: 'github-jenkins',
+                    git credentialsId: 'jenkins-github',
                         url: 'git@github.com:DEL-ORG/a1franklin.git',
                         branch: "${params.BRANCH_NAME}"
                 }
             }
         }
+
+
 
         stage('Test') {
             steps {
@@ -36,46 +38,43 @@ pipeline {
             }
         }
 
-        stage('Validate') {
-            steps {
-                sh 'pwd'
-            }
-        }
+    //stage('Validate') {
+    //    steps {
+    //        sh 'pwd'
+    //    }
+    //}
 
-        stage('Scan') {
-            steps {
-                sh 'pwd'
-            }
-        }
+    //stage('Scan') {
+    //    steps {
+    //        sh 'pwd'
+    //    }
+    //}
 
-        stage('Build') {
-            steps {
-                sh '''
-                echo "FROM httpd:2.4" > Dockerfile
-                docker build -t eric .
-                docker images
-                '''
-            }
-        }
+    //stage('Build') {
+    //    steps {
+    //        sh '''
+    //        echo "FROM httpd:2.4" > Dockerfile
+    //        docker build -t eric .
+    //        docker images
+    //        '''
+    //    }
+    //}
 
-        stage('Push') {
-            steps {
-                sh 'pwd'
-            }
-        }
+    //stage('Push') {
+    //    steps {
+    //        sh 'pwd'
+    //    }
+    //}
 
-        stage('Deploy') {
-            steps {
-                sh 'pwd'
-            }
-        }
-    }
+    //stage('Deploy') {
+    //    steps {
+    //        sh 'pwd'
+    //    }
+    //}
+    //
 
-    post {
-        always {
-            script {
-                // Add your post-build actions here
-            }
-        }
+    // {
+    //always {
+    //    echo 'This will always run, regardless of the build result'
     }
 }
