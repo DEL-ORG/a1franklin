@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'maven:3.8.5-openjdk-17' // Docker image with Maven and Java 17
+            args '-u root:root' // Run as root user
+        }
+    }
     options {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '3', numToKeepStr: '3'))
         disableConcurrentBuilds()
@@ -28,10 +33,8 @@ pipeline {
                     steps {
                         dir('do-it-yourself/src/ui') {
                             script {
-                                // Ensure gradlew is executable
-                                sh 'chmod +x ./gradlew'
                                 // Build and test UI microservice
-                                sh './gradlew clean build test'
+                                sh 'mvn clean install'
                             }
                         }
                     }
@@ -40,10 +43,8 @@ pipeline {
                     steps {
                         dir('do-it-yourself/src/cart') {
                             script {
-                                // Ensure gradlew is executable
-                                sh 'chmod +x ./gradlew'
                                 // Build and test Cart microservice
-                                sh './gradlew clean build test'
+                                sh 'mvn clean install'
                             }
                         }
                     }
@@ -52,10 +53,8 @@ pipeline {
                     steps {
                         dir('do-it-yourself/src/orders') {
                             script {
-                                // Ensure gradlew is executable
-                                sh 'chmod +x ./gradlew'
                                 // Build and test Orders microservice
-                                sh './gradlew clean build test'
+                                sh 'mvn clean install'
                             }
                         }
                     }
