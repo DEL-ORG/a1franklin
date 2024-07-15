@@ -9,11 +9,9 @@ pipeline {
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
-
     triggers {
         githubPush() // This will trigger the pipeline on GitHub push events
     }
-
     stages {
         stage('Clone Repository') {
             steps {
@@ -24,57 +22,75 @@ pipeline {
                 }
             }
         }
-
-
-
-        stage('Test') {
-            steps {
-                sh '''
-                kubectl 
-                pwd
-                uname -r 
-                touch eric
-                '''
+        stage('Build & Test UI, Cart, Orders (Java)') {
+            parallel {
+                stage('UI') {
+                    steps {
+                        dir('do-it-yourself/src/ui') {
+                            script {
+                                // Build and test UI microservice
+                                sh './gradlew clean build test'
+                            }
+                        }
+                    }
+                }
+                stage('Cart') {
+                    steps {
+                        dir('do-it-yourself/src/cart') {
+                            script {
+                                // Build and test Cart microservice
+                                sh './gradlew clean build test'
+                            }
+                        }
+                    }
+                }
+                stage('Orders') {
+                    steps {
+                        dir('do-it-yourself/src/orders') {
+                            script {
+                                // Build and test Orders microservice
+                                sh './gradlew clean build test'
+                            }
+                        }
+                    }
+                }
             }
         }
-
-    //stage('Validate') {
-    //    steps {
-    //        sh 'pwd'
-    //    }
-    //}
-
-    //stage('Scan') {
-    //    steps {
-    //        sh 'pwd'
-    //    }
-    //}
-
-    //stage('Build') {
-    //    steps {
-    //        sh '''
-    //        echo "FROM httpd:2.4" > Dockerfile
-    //        docker build -t eric .
-    //        docker images
-    //        '''
-    //    }
-    //}
-
-    //stage('Push') {
-    //    steps {
-    //        sh 'pwd'
-    //    }
-    //}
-
-    //stage('Deploy') {
-    //    steps {
-    //        sh 'pwd'
-    //    }
-    //}
-    //
-
-    // {
-    //always {
-    //    echo 'This will always run, regardless of the build result'
+        stage('Build & Test Catalog (Go)') {
+            steps {
+                dir('do-it-yourself/src/catalog') {
+                    script {
+                        // Build and test Catalog microservice
+                        sh 'go test ./...'
+                    }
+                }
+            }
+        }
+        stage('Build & Test Checkout (Node.js)') {
+            steps {
+                dir('do-it-yourself/src/checkout') {
+                    script {
+                        // Install dependencies
+                        sh 'npm install'
+                        // Run tests
+                        sh 'npm test'
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            // Clean up workspace
+            cleanWs()
+        }
+        success {
+            // Notify success (e.g., Slack, Email)
+            echo 'All tests passed!'
+        }
+        failure {
+            // Notify failure (e.g., Slack, Email)
+            echo 'Tests failed!'
+        }
     }
 }
