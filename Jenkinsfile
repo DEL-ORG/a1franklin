@@ -1,8 +1,8 @@
 pipeline {
     agent {
         docker {
-            image 'maven:3.8.5-openjdk-17' // Docker image with Maven and Java 17
-            args '-u root:root' // Run as root user
+            image 'maven:3.8.5-openjdk-17'
+            args '-u root:root'
         }
     }
     options {
@@ -15,7 +15,7 @@ pipeline {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
     triggers {
-        githubPush() // This will trigger the pipeline on GitHub push events
+        githubPush() // Trigger the pipeline on GitHub push events
     }
     stages {
         stage('Clone Repository') {
@@ -27,76 +27,88 @@ pipeline {
                 }
             }
         }
-        stage('Build & Test UI, Cart, Orders (Java)') {
-            parallel {
-                stage('UI') {
-                    steps {
-                        dir('do-it-yourself/src/ui') {
-                            script {
-                                // Build and test UI microservice
-                                sh 'mvn clean install'
-                            }
-                        }
-                    }
-                }
-                stage('Cart') {
-                    steps {
-                        dir('do-it-yourself/src/cart') {
-                            script {
-                                // Build and test Cart microservice
-                                sh 'mvn clean install'
-                            }
-                        }
-                    }
-                }
-                stage('Orders') {
-                    steps {
-                        dir('do-it-yourself/src/orders') {
-                            script {
-                                // Build and test Orders microservice
-                                sh 'mvn clean install'
-                            }
-                        }
-                    }
+        stage('Unit Test UI') {
+            agent {
+                docker {
+                    image 'maven:3.9.8'
+                    args '-u root:root'
                 }
             }
-        }
-        stage('Build & Test Catalog (Go)') {
             steps {
-                dir('do-it-yourself/src/catalog') {
-                    script {
-                        // Build and test Catalog microservice
-                        sh 'go test ./...'
-                    }
-                }
+                sh '''
+                    cd do-it-yourself/src/ui
+                    mvn test -DskipTests=true
+                '''
             }
         }
-        stage('Build & Test Checkout (Node.js)') {
-            steps {
-                dir('do-it-yourself/src/checkout') {
-                    script {
-                        // Install dependencies
-                        sh 'npm install'
-                        // Run tests
-                        sh 'npm test'
-                    }
+        stage('Unit Test Catalog') {
+            agent {
+                docker {
+                    image 'golang:1.22.5'
+                    args '-u 0:0'
                 }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/catalog
+                    go test -buildscv=false
+                '''
+            }
+        }
+        stage('Unit Test Cart') {
+            agent {
+                docker {
+                    image 'maven:3.9.8'
+                    args '-u root:root'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/cart
+                    mvn test -DskipTests=true
+                '''
+            }
+        }
+        stage('Unit Test Orders') {
+            agent {
+                docker {
+                    image 'maven:3.9.8'
+                    args '-u root:root'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/orders
+                    mvn test -DskipTests=true
+                '''
+            }
+        }
+        stage('Unit Test Checkout') {
+            agent {
+                docker {
+                    image 'node:20.15.1'
+                    args '-u root:root'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/checkout
+                    npm install
+                '''
             }
         }
     }
     post {
         always {
-            // Clean up workspace
             cleanWs()
         }
         success {
-            // Notify success (e.g., Slack, Email)
             echo 'All tests passed!'
+            // Notify success (e.g., Slack, Email)
         }
         failure {
-            // Notify failure (e.g., Slack, Email)
             echo 'Tests failed!'
+            // Notify failure (e.g., Slack, Email)
         }
     }
-    
 }
