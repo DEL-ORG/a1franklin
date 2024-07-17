@@ -27,34 +27,14 @@ pipeline {
             }
         }
         
-        stage('SonarQube Analysis') {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli:latest'
-                    args '-u root:root'
+         
+        stage("Quality Gate") {
+                steps {
+                  timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                  }
                 }
-            }
-            environment {
-                SONAR_HOST_URL = 'https://sonarqube.devopseasylearning.uk/'
-                SONAR_LOGIN = credentials('a1franklin-sonarqube')
-            }
-            steps {
-                sh '''
-                    cd do-it-yourself
-                    sonar-scanner \
-                      -Dsonar.projectKey=a1franklin-do-it-yourself \
-                      -Dsonar.projectName=do-it-yourself \
-                      -Dsonar.projectVersion=1.0 \
-                      -Dsonar.sources=./do-it-yourself \
-                      -Dsonar.qualitygate.wait=true \
-                      -Dsonar.sourceEncoding=UTF-8 \
-                      -Dsonar.java.binaries=do-it-yourself/src/misc/style/java \
-                      -Dsonar.host.url=$SONAR_HOST_URL \
-                      -Dsonar.login=$SONAR_LOGIN
-                '''
-            }
-        }
-
+              }   
         stage('Unit Test UI') {
             agent {
                 docker {
@@ -129,6 +109,22 @@ pipeline {
                 '''
             }
         }
+        stage('SonarQube analysis') {
+                agent {
+                    docker {
+                      image  'sonarsource/sonar-scanner-cli:10.0'
+                    }
+                   }
+                   environment {
+            CI = 'true'
+            scannerHome='/opt/sonar-scanner'
+        }
+                steps{
+                    withSonarQubeEnv('sonar') {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                    }
+                }
+            }
     }
     
     post {
