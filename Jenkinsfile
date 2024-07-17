@@ -27,14 +27,31 @@ pipeline {
             }
         }
         
-         
-        stage("Quality Gate") {
-                steps {
-                  timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                  }
+        stage('SonarQube analysis') {
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli:10.0'
                 }
-              }   
+            }
+            environment {
+                CI = 'true'
+                scannerHome = '/opt/sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonar') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+        
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+        
         stage('Unit Test UI') {
             agent {
                 docker {
@@ -68,7 +85,7 @@ pipeline {
         stage('Unit Test Cart') {
             agent {
                 docker {
-                   image 'maven:3.8.3-openjdk-17'
+                    image 'maven:3.8.3-openjdk-17'
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
@@ -84,7 +101,7 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.8.3-openjdk-17'
-                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
             steps {
@@ -109,22 +126,6 @@ pipeline {
                 '''
             }
         }
-        stage('SonarQube analysis') {
-                agent {
-                    docker {
-                      image  'sonarsource/sonar-scanner-cli:10.0'
-                    }
-                   }
-                   environment {
-            CI = 'true'
-            scannerHome='/opt/sonar-scanner'
-        }
-                steps{
-                    withSonarQubeEnv('sonar') {
-                        sh "${scannerHome}/bin/sonar-scanner"
-                    }
-                }
-            }
     }
     
     post {
