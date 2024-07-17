@@ -1,22 +1,21 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.8.5-openjdk-17'
-            args '-u root:root'
-        }
-    }
+    agent any
+    
     options {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '', daysToKeepStr: '3', numToKeepStr: '3'))
         disableConcurrentBuilds()
         timeout(time: 7, unit: 'HOURS')
         timestamps()
     }
+    
     parameters {
         string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Enter the name of the branch')
     }
+    
     triggers {
         githubPush() // Trigger the pipeline on GitHub push events
     }
+    
     stages {
         stage('Clone Repository') {
             steps {
@@ -27,6 +26,7 @@ pipeline {
                 }
             }
         }
+        
         stage('Unit Test UI') {
             agent {
                 docker {
@@ -41,6 +41,7 @@ pipeline {
                 '''
             }
         }
+        
         stage('Unit Test Catalog') {
             agent {
                 docker {
@@ -51,10 +52,11 @@ pipeline {
             steps {
                 sh '''
                     cd do-it-yourself/src/catalog
-                    go test -buildscv=false
+                    go test -buildv=false
                 '''
             }
         }
+        
         stage('Unit Test Cart') {
             agent {
                 docker {
@@ -69,6 +71,7 @@ pipeline {
                 '''
             }
         }
+        
         stage('Unit Test Orders') {
             agent {
                 docker {
@@ -83,6 +86,7 @@ pipeline {
                 '''
             }
         }
+        
         stage('Unit Test Checkout') {
             agent {
                 docker {
@@ -98,14 +102,17 @@ pipeline {
             }
         }
     }
+    
     post {
         always {
             cleanWs()
         }
+        
         success {
             echo 'All tests passed!'
             // Notify success (e.g., Slack, Email)
         }
+        
         failure {
             echo 'Tests failed!'
             // Notify failure (e.g., Slack, Email)
