@@ -27,38 +27,6 @@ pipeline {
             }
         }
         
-        stage('SonarQube analysis') {
-            agent {
-                docker {
-                    image 'sonarsource/sonar-scanner-cli:10.0'
-                }
-            }
-            environment {
-                CI = 'true'
-                scannerHome = '/opt/sonar-scanner'
-            }
-            steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=a1franklin-do-it-yourself \
-                        -Dsonar.projectName=do-it-yourself \
-                        -Dsonar.projectVersion=1.0 \
-                        -Dsonar.sources=./do-it-yourself \
-                        -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
-                    """
-                }
-            }
-        }
-        
-        stage('Quality Gate') {
-            steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-        
         stage('Unit Test UI') {
             agent {
                 docker {
@@ -131,6 +99,38 @@ pipeline {
                     cd do-it-yourself/src/checkout
                     npm install
                 '''
+            }
+        }
+
+        stage('SonarQube analysis') {
+            agent {
+                docker {
+                    image 'sonarsource/sonar-scanner-cli:10.0'
+                }
+            }
+            environment {
+                CI = 'true'
+                scannerHome = '/opt/sonar-scanner'
+            }
+            steps {
+                withSonarQubeEnv('sonarqube') {
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=a1franklin-do-it-yourself \
+                        -Dsonar.projectName=do-it-yourself \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dsonar.sources=./do-it-yourself \
+                        -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
+                    """
+                }
+            }
+        }
+        
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
             }
         }
     }
