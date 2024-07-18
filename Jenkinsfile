@@ -116,11 +116,13 @@ pipeline {
                 withSonarQubeEnv('sonarqube') {
                     sh """
                         ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=a1franklin-do-it-yourself \
-                        -Dsonar.projectName=do-it-yourself \
-                        -Dsonar.projectVersion=1.0 \
-                        -Dsonar.sources=./do-it-yourself \
-                        -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
+                        -sonar.projectKey=a1franklin-do-it-yourself \
+                        -sonar.projectName=do-it-yourself \
+                        -sonar.projectVersion=1.0 \
+                        -qualitygate.wait=true
+                        -sonar.sourceEncoding=UTF-8
+                        -sonar.sources=./do-it-yourself \
+                        -sonar.java.binaries=do-it-yourself/src/misc/style/java
                     """
                 }
             }
