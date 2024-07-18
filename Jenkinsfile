@@ -27,6 +27,12 @@ pipeline {
             }
         }
         
+        stage('List Directory') {
+            steps {
+                sh 'ls -R'  // List all files and directories recursively
+            }
+        }
+        
         stage('Unit Test UI') {
             agent {
                 docker {
@@ -101,9 +107,7 @@ pipeline {
                 '''
             }
         }
-
         
-
         stage('SonarQube Analysis') {
             agent {
                 docker {
@@ -128,8 +132,7 @@ pipeline {
                 }
             }
         }
-
-
+        
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
@@ -137,10 +140,8 @@ pipeline {
                 }
             }
         }
-
     }  
-
-
+    
     post {
         always {
             cleanWs()
