@@ -27,6 +27,14 @@ pipeline {
             }
         }
         
+        stage('Verify Repository') {
+            steps {
+                sh 'ls -la'
+                sh 'ls -la do-it-yourself/src'
+                sh 'ls -la do-it-yourself/src/ui'
+            }
+        }
+        
         stage('Unit Test UI') {
             agent {
                 docker {
