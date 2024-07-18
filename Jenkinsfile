@@ -102,7 +102,8 @@ pipeline {
             }
         }
 
-        stage('SonarQube analysis') {
+        
+        stage('SonarQube Analysis') {
             agent {
                 docker {
                     image 'sonarsource/sonar-scanner-cli:10.0'
@@ -113,24 +114,20 @@ pipeline {
                 scannerHome = '/opt/sonar-scanner'
             }
             steps {
-                withSonarQubeEnv('sonarqube') {
-                    withCredentials([string(credentialsId: 'a1franklin-sonarqube', variable: 'SONAR_LOGIN')]) {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=a1franklin-do-it-yourself \
-                            -Dsonar.projectName=a1franklin-do-it-yourself \
-                            -Dsonar.projectVersion=1.0 \
-                            -Dqualitygate.wait=true \
-                            -Dsonar.sourceEncoding=UTF-8 \
-                            -Dsonar.sources=./do-it-yourself \
-                            -Dsonar.java.binaries=do-it-yourself/src/misc/style/java \
-                            -Dsonar.login=$SONAR_LOGIN
-                        """
-                    }
+                withSonarQubeEnv('a1franklin-sonarqube') {
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=a1franklin-do-it-yourself \
+                        -Dsonar.projectName=a1franklin-do-it-yourself \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dqualitygate.wait=true \
+                        -Dsonar.sources=./do-it-yourself \
+                        -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
+                    """
                 }
             }
         }
-        
+
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
@@ -138,7 +135,87 @@ pipeline {
                 }
             }
         }
-    }   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     post {
         always {
             cleanWs()
