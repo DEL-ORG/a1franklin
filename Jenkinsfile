@@ -118,7 +118,7 @@ pipeline {
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=a1franklin-do-it-yourself \
-                            -Dsonar.projectName=do-it-yourself \
+                            -Dsonar.projectName=a1franklin-do-it-yourself \
                             -Dsonar.projectVersion=1.0 \
                             -Dqualitygate.wait=true \
                             -Dsonar.sourceEncoding=UTF-8 \
