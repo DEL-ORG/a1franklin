@@ -27,6 +27,83 @@ pipeline {
             }
         }
         
+        stage('Unit Test UI') {
+            agent {
+                docker {
+                    image 'maven:3.8.3-openjdk-17'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/ui
+                    mvn test -DskipTests=true
+                '''
+            }
+        }
+        
+        stage('Unit Test Catalog') {
+            agent {
+                docker {
+                    image 'golang:1.22.5'
+                    args '-u 0:0'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/catalog
+                    go test -buildv=false
+                '''
+            }
+        }
+        
+        stage('Unit Test Cart') {
+            agent {
+                docker {
+                    image 'maven:3.8.3-openjdk-17'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/cart
+                    mvn test -DskipTests=true
+                '''
+            }
+        }
+        
+        stage('Unit Test Orders') {
+            agent {
+                docker {
+                    image 'maven:3.8.3-openjdk-17'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/orders
+                    mvn test -DskipTests=true
+                '''
+            }
+        }
+        
+        stage('Unit Test Checkout') {
+            agent {
+                docker {
+                    image 'node:20.15.1'
+                    args '-u root:root'
+                }
+            }
+            steps {
+                sh '''
+                    cd do-it-yourself/src/checkout
+                    npm install
+                '''
+            }
+        }
+
+        
+
         stage('SonarQube Analysis') {
             agent {
                 docker {
@@ -38,19 +115,16 @@ pipeline {
                 scannerHome = '/opt/sonar-scanner'
             }
             steps {
-                script {
-                    // Define SonarQube environment
-                    withSonarQubeEnv('a1franklin-sonarqube') {
-                        // Run SonarQube scanner
-                        sh '''
-                            ${scannerHome}/bin/sonar-scanner \
-                                -Dsonar.projectKey=a1franklin-do-it-yourself \
-                                -Dsonar.projectName="do-it-yourself" \
-                                -Dsonar.projectVersion=1.0 \
-                                -Dsonar.sources=./do-it-yourself \
-                                -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
-                        '''
-                    }
+                withSonarQubeEnv('a1franklin-sonarqube') {
+                    sh """
+                    ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=a1franklin-do-it-yourself \
+                        -Dsonar.projectName=a1franklin-do-it-yourself \
+                        -Dsonar.projectVersion=1.0 \
+                        -Dqualitygate.wait=true \
+                        -Dsonar.sources=./do-it-yourself \
+                        -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
+                    """
                 }
             }
         }
@@ -62,19 +136,100 @@ pipeline {
                 }
             }
         }
-    }
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     post {
         always {
             cleanWs()
         }
         
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'All tests passed!'
+            // Notify success (e.g., Slack, Email)
         }
         
         failure {
-            echo 'Pipeline failed!'
+            echo 'Tests failed!'
+            // Notify failure (e.g., Slack, Email)
         }
     }
 }
