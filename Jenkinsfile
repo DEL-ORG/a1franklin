@@ -1,13 +1,13 @@
 pipeline {
     agent any
-     
+
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
         disableConcurrentBuilds()
         timeout(time: 10, unit: 'MINUTES')
         timestamps()
     }
-    
+
     triggers {
         githubPush()
     }
@@ -59,7 +59,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Scan Golang Code') {
             agent {
                 docker {
@@ -77,12 +77,83 @@ pipeline {
                 '''
             }
         }
-        
+
         stage('Unit Test UI Code') {
             agent {
                 docker {
-                    image 'maven:3.9.8' // Updated to the preferred Maven image
+                    image 'maven:3.9.8'
                     args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
-            environment
+            environment {
+                DOCKER_HOST = 'unix:///var/run/docker.sock'
+            }
+            steps {
+                sh '''
+                cd do-it-yourself/src/ui
+                mvn test
+                '''
+            }
+        }
+
+        stage('Unit Test Cart Code') {
+            agent {
+                docker {
+                    image 'maven:3.9.8'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                }
+            }
+            steps {
+                sh '''
+                cd do-it-yourself/src/cart
+                mvn test -DskipTests=true
+                '''
+            }
+        }
+
+        stage('Unit Test Orders Code') {
+            agent {
+                docker {
+                    image 'maven:3.9.8'
+                    args '-u root'
+                }
+            }
+            steps {
+                sh '''
+                cd do-it-yourself/src/orders
+                mvn test -DskipTests=true
+                '''
+            }
+        }
+
+        stage('Scan Checkout Code') {
+            agent {
+                docker {
+                    image 'node:20.15.1'
+                    args '-u root'
+                }
+            }
+            steps {
+                sh '''
+                cd do-it-yourself/src/checkout
+                ls -la
+                node --version
+                npm --version
+                # Add other scanning or commands as needed
+                '''
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished.'
+        }
+        success {
+            echo 'Pipeline succeeded!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
