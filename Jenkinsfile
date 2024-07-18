@@ -38,7 +38,7 @@ pipeline {
                 scannerHome = '/opt/sonar-scanner'
             }
             steps {
-                withSonarQubeEnv('gymef_sonarqube') {
+                withSonarQubeEnv('sonarqube') {
                     sh """
                     ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=a1franklin-do-it-yourself \
