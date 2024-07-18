@@ -1,6 +1,5 @@
 pipeline {
     agent any
-    }
      
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
@@ -39,7 +38,7 @@ pipeline {
                 scannerHome = '/opt/sonar-scanner'
             }
             steps {
-                withSonarQubeEnv('sonarqube') {
+                withSonarQubeEnv('sonarque') {
                     sh """
                     ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=a1franklin-do-it-yourself \
@@ -60,14 +59,13 @@ pipeline {
                 }
             }
         }
-
-        
         
         stage('Scan Golang Code') {
             agent {
                 docker {
                     image 'golang:1.22.5'
-                    args '-u root' 
+                    args '-u root'
+                }
             }
             steps {
                 sh '''
@@ -83,81 +81,8 @@ pipeline {
         stage('Unit Test UI Code') {
             agent {
                 docker {
-                    image 'maven:3.8.5-openjdk-17'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
+                    image 'maven:3.9.8' // Updated to the preferred Maven image
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
                 }
             }
-            environment {
-                DOCKER_HOST = 'unix:///var/run/docker.sock' // Set Docker host
-            }
-            steps {
-                sh '''
-                cd do-it-yourself/src/ui
-                mvn test
-                '''
-            }
-        }
-
-        stage('Unit Test Cart Code') {
-            agent {
-                docker {
-                    image 'maven:3.8.5-openjdk-17'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
-                }
-            }
-            
-            steps {
-                sh '''
-                cd do-it-yourself/src/cart
-                mvn test -DskipTests=true
-                '''
-            }
-        }
-
-        stage('Unit Test Orders Code') {
-            agent {
-                docker {
-                    image 'maven:3.8.5-openjdk-17'
-                    args '-u root' // Run the container as the root user
-                }
-            }
-            steps {
-                sh '''
-                cd do-it-yourself/src/orders
-                mvn test -DskipTests=true
-                '''
-            }
-        }
-        
-        stage('Scan Checkout Code') {
-            agent {
-                docker {
-                    image 'node:14' // Use a Node.js Docker image
-                    args '-u root' // Run the container as the root user
-                }
-            }
-            steps {
-                sh '''
-                cd do-it-yourself/src/checkout
-                ls -la
-                node --version
-                npm --version
-                # Add other scanning or commands as needed
-                '''
-            }
-        }
-
-    }
-
-    post {
-        always {
-            echo 'Pipeline finished.'
-        }
-        success {
-            echo 'Pipeline succeeded!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
-}
+            environment
