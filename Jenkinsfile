@@ -114,16 +114,19 @@ pipeline {
             }
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh """
-                        ${scannerHome}/bin/sonar-scanner \
-                        -Dsonar.projectKey=a1franklin-do-it-yourself \
-                        -Dsonar.projectName=do-it-yourself \
-                        -Dsonar.projectVersion=1.0 \
-                        -Dqualitygate.wait=true \
-                        -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.sources=./do-it-yourself \
-                        -Dsonar.java.binaries=do-it-yourself/src/misc/style/java
-                    """
+                    withCredentials([string(credentialsId: 'a1franklin-sonarqube', variable: 'SONAR_LOGIN')]) {
+                        sh """
+                            ${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=a1franklin-do-it-yourself \
+                            -Dsonar.projectName=do-it-yourself \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dqualitygate.wait=true \
+                            -Dsonar.sourceEncoding=UTF-8 \
+                            -Dsonar.sources=./do-it-yourself \
+                            -Dsonar.java.binaries=do-it-yourself/src/misc/style/java \
+                            -Dsonar.login=$SONAR_LOGIN
+                        """
+                    }
                 }
             }
         }
