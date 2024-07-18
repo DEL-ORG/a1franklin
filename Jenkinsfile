@@ -27,12 +27,6 @@ pipeline {
             }
         }
         
-        stage('List Directory') {
-            steps {
-                sh 'ls -R'  // List all files and directories recursively
-            }
-        }
-        
         stage('Unit Test UI') {
             agent {
                 docker {
