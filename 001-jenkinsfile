@@ -1,13 +1,15 @@
 pipeline {
-    agent any
-
+    agent {
+        label 'docker'
+    }
+     
     options {
         buildDiscarder(logRotator(numToKeepStr: '7'))
         disableConcurrentBuilds()
         timeout(time: 10, unit: 'MINUTES')
         timestamps()
     }
-
+    
     triggers {
         githubPush()
     }
@@ -20,8 +22,8 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 script {
-                    git credentialsId: 'new-do-it-jenkins-github',
-                        url: 'git@github.com:DEL-ORG/a1franklin.git',
+                    git credentialsId: 'github-jenkins-ssh',
+                        url: 'git@github.com:DEL-ORG/a1vincent-do-it-yourself.git',
                         branch: "${params.BRANCH_NAME}"
                 }
             }
@@ -60,11 +62,13 @@ pipeline {
             }
         }
 
+        
+        
         stage('Scan Golang Code') {
             agent {
                 docker {
                     image 'golang:1.22.5'
-                    args '-u root'
+                    args '-u root' // Run the container as the root user
                 }
             }
             steps {
@@ -77,16 +81,16 @@ pipeline {
                 '''
             }
         }
-
+        
         stage('Unit Test UI Code') {
             agent {
                 docker {
-                    image 'maven:3.9.8'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    image 'maven:3.8.5-openjdk-17'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
                 }
             }
             environment {
-                DOCKER_HOST = 'unix:///var/run/docker.sock'
+                DOCKER_HOST = 'unix:///var/run/docker.sock' // Set Docker host
             }
             steps {
                 sh '''
@@ -99,10 +103,11 @@ pipeline {
         stage('Unit Test Cart Code') {
             agent {
                 docker {
-                    image 'maven:3.9.8'
-                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock'
+                    image 'maven:3.8.5-openjdk-17'
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock' // Mount Docker socket
                 }
             }
+            
             steps {
                 sh '''
                 cd do-it-yourself/src/cart
@@ -114,8 +119,8 @@ pipeline {
         stage('Unit Test Orders Code') {
             agent {
                 docker {
-                    image 'maven:3.9.8'
-                    args '-u root'
+                    image 'maven:3.8.5-openjdk-17'
+                    args '-u root' // Run the container as the root user
                 }
             }
             steps {
@@ -125,12 +130,12 @@ pipeline {
                 '''
             }
         }
-
+        
         stage('Scan Checkout Code') {
             agent {
                 docker {
-                    image 'node:20.15.1'
-                    args '-u root'
+                    image 'node:14' // Use a Node.js Docker image
+                    args '-u root' // Run the container as the root user
                 }
             }
             steps {
@@ -140,6 +145,17 @@ pipeline {
                 node --version
                 npm --version
                 # Add other scanning or commands as needed
+                '''
+            }
+        }
+
+             
+        stage('Test') {
+            steps {
+                sh '''
+                ls
+                pwd
+                whoami
                 '''
             }
         }

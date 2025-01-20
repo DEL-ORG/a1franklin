@@ -19,3 +19,4 @@ USER nginx
 STOPSIGNAL SIGQUIT
 
 CMD ["nginx", "-g", "daemon off;"]
+
