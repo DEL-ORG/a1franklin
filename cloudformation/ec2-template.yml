@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template to create two EC2 instances in us-east-1, install Apache, configure SSM roles and security groups, and add a load balancer with auto-scaling using launch templates.
+
+Resources:
+  # IAM Role for SSM
+  SSMRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action: "sts:AssumeRole"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+
+  # Instance Profile for SSM Role
+  SSMInstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Roles:
+        - Ref: SSMRole
+
+  # Security Group
+  SecurityGroup:
+    Type: "AWS::EC2::SecurityGroup"
+    Properties:
+      GroupDescription: Allow SSH and HTTP access
+      VpcId: "vpc-03840e51dcb8fb65f"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  # Launch Template
+  LaunchTemplate:
+    Type: "AWS::EC2::LaunchTemplate"
+    Properties:
+      LaunchTemplateName: "WebServerLaunchTemplate"
+      LaunchTemplateData:
+        InstanceType: t2.micro
+        KeyName: "jenkins-new"
+        ImageId: "ami-04b4f1a9cf54c11d0"
+        IamInstanceProfile:
+          Name: !Ref SSMInstanceProfile
+        SecurityGroupIds:
+          - !Ref SecurityGroup
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            apt-get update -y
+            apt-get install -y apache2
+            systemctl enable apache2
+            systemctl start apache2
+
+  # Auto Scaling Group
+  AutoScalingGroup:
+    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Properties:
+      VPCZoneIdentifier:
+        - "subnet-0ec8f617a33e20ec2"
+        - "subnet-0e4a88f795e88fd67"
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: 2
+      MaxSize: 4
+      DesiredCapacity: 2
+      TargetGroupARNs:
+        - !Ref TargetGroup
+
+  # Load Balancer
+  LoadBalancer:
+    Type: "AWS::ElasticLoadBalancingV2::LoadBalancer"
+    Properties:
+      Name: "WebLoadBalancer"
+      Scheme: internet-facing
+      Subnets:
+        - "subnet-0ec8f617a33e20ec2"
+        - "subnet-0e4a88f795e88fd67"
+      SecurityGroups:
+        - !Ref SecurityGroup
+
+  # Target Group
+  TargetGroup:
+    Type: "AWS::ElasticLoadBalancingV2::TargetGroup"
+    Properties:
+      Name: "WebTargetGroup"
+      Port: 80
+      Protocol: HTTP
+      VpcId: "vpc-03840e51dcb8fb65f"
+      TargetType: instance
+      HealthCheckEnabled: true
+      HealthCheckPath: "/"
+
+  # Listener
+  LoadBalancerListener:
+    Type: "AWS::ElasticLoadBalancingV2::Listener"
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+Outputs:
+  LoadBalancerDNS:
+    Description: DNS name of the load balancer
+    Value: !GetAtt [LoadBalancer, DNSName]
+
+  SecurityGroupId:
+    Description: Security Group ID
+    Value: !Ref SecurityGroup
